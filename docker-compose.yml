@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # 🗄️ MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: efir-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: efir_db
+      MYSQL_ROOT_PASSWORD: vivek9941
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ⚙️ Spring Boot Backend
+  backend:
+    build:
+      context: ./Backend/eFIR
+    container_name: efir-backend
+    restart: always
+    ports:
+      - "8085:8085"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/efir_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=vivek9941
+      - JWT_SECRET=teamttian_vivek_mane_pict123_super_secret_key_256bit
+      # Add mail and AI keys if needed via local .env
+      # - MAIL_USERNAME=${MAIL_USERNAME}
+      # - MAIL_PASSWORD=${MAIL_PASSWORD}
+      # - GROQ_API_KEY=${GROQ_API_KEY}
+    networks:
+      - efir-network
+
+  # 🖥️ React Frontend
+  frontend:
+    build:
+      context: ./Frontend/efir-complaint-system
+      args:
+        - VITE_API_BASE_URL=http://localhost:8085
+    container_name: efir-frontend
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - efir-network
+
+networks:
+  efir-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

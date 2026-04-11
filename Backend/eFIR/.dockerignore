@@ -1,0 +1,7 @@
+target/
+.mvn/
+.idea/
+*.log
+Dockerfile
+.dockerignore
+.git/

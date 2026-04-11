@@ -170,6 +170,8 @@ flowchart TB
 WTL_Mini_Project/
 │
 ├── Backend/eFIR/
+│   ├── Dockerfile            # [NEW] Multi-stage backend build
+│   ├── .dockerignore         # [NEW] Backend build ignore rules
 │   ├── pom.xml
 │   ├── src/main/java/com/efir/
 │   │   ├── EfirApplication.java
@@ -195,6 +197,9 @@ WTL_Mini_Project/
 │       └── application.properties
 │
 ├── Frontend/efir-complaint-system/
+│   ├── Dockerfile            # [NEW] Multi-stage frontend build (Nginx)
+│   ├── .dockerignore         # [NEW] Frontend build ignore rules
+│   ├── nginx.conf            # [NEW] Nginx SPA routing config
 │   ├── package.json
 │   ├── index.html
 │   ├── tailwind.config.js
@@ -281,6 +286,28 @@ npm run dev
 ```
 
 The frontend starts on **http://localhost:5173**
+
+---
+
+## 🐳 Docker Deployment (Recommended)
+
+The entire system (MySQL + Backend + Frontend) can be launched using a single command:
+
+### 1️⃣ Prerequisites
+- **Docker** and **Docker Compose** installed.
+
+### 2️⃣ Configuration
+- Ensure your environment variables are set in `docker-compose.yml` (e.g., `MAIL_USERNAME`, `GROQ_API_KEY`).
+
+### 3️⃣ Launch
+```bash
+# Build and start all services
+docker-compose up -d --build
+```
+
+- **Frontend**: http://localhost:5173
+- **Backend**: http://localhost:8085
+- **MySQL**: localhost:3306
 
 ---
 
