@@ -1,8 +1,11 @@
+// AuthContext — uses centralized axiosInstance, LoadingSpinner for auth checks
 import {createContext, useContext, useEffect, useState} from "react";
 import {decryptuser} from "./DecryptionHelper.js";
-import axios from "axios";
-import {encryptAES} from "../utils/AESEncryption.js";
+import API from "../api/axiosInstance.js";
+import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
+
 const AuthContext = createContext();
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
         const rawUser = localStorage.getItem("user");
@@ -42,7 +45,7 @@ export const AuthProvider = ({ children }) => {
             if (isValid) {
                 const storedRawUser = localStorage.getItem("user");
                 if (storedRawUser) {
-                    const storedUser = decryptuser(JSON.parse(storedRawUser)); // ❗️Fix: Use decryptuser, not decryptAES directly
+                    const storedUser = decryptuser(JSON.parse(storedRawUser));
                     setUser(storedUser);
                     setIsAuthenticated(true);
                 }
@@ -60,14 +63,9 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (token) => {
         try {
-            console.log("insidelogin");
-
-            const response = await axios.get('http://localhost:8085/user/get?token=' + token, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await API.get('/user/get?token=' + token);
 
             const user = response.data;
-            console.log(user);
             if (response.status === 400 || !user.verified) return false;
 
             localStorage.setItem('token', token);
@@ -86,6 +84,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        sessionStorage.removeItem('complaints');
         setUser(null);
         setIsAuthenticated(false);
     };
@@ -99,11 +98,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>; // Spinner or placeholder
+        return <LoadingSpinner fullScreen message="Authenticating..." />;
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {

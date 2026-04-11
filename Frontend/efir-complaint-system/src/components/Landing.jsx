@@ -1,179 +1,169 @@
-import React, { useEffect, useState } from 'react';
+// Landing — Civic portal homepage with hero, how-it-works, features, AI chat
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ChatBox from './ChatBox';
 import Navigation from "./Navigation.jsx";
 import Footer from "./Footer.jsx";
+import { FiFileText, FiSearch, FiCheckCircle, FiShield, FiZap, FiLock } from 'react-icons/fi';
 
 const Landing = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState(false);
   const [chatVisible, setChatVisible] = useState(false);
 
-  // Force scroll to top on component mount and trigger animations
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    // Trigger hero animations
     setTimeout(() => setIsVisible(true), 100);
 
-    // Set up intersection observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (entry.target.id === 'features-section') {
-            setFeaturesVisible(true);
-          } else if (entry.target.id === 'chat-section') {
-            setChatVisible(true);
-          }
+          if (entry.target.id === 'features-section') setFeaturesVisible(true);
+          else if (entry.target.id === 'chat-section') setChatVisible(true);
         }
       });
     }, observerOptions);
 
-    // Observe sections after a short delay to ensure they're mounted
     setTimeout(() => {
-      const featuresSection = document.getElementById('features-section');
-      const chatSection = document.getElementById('chat-section');
-
-      if (featuresSection) observer.observe(featuresSection);
-      if (chatSection) observer.observe(chatSection);
+      const el1 = document.getElementById('features-section');
+      const el2 = document.getElementById('chat-section');
+      if (el1) observer.observe(el1);
+      if (el2) observer.observe(el2);
     }, 100);
 
     return () => observer.disconnect();
   }, []);
 
+  const steps = [
+    { icon: <FiFileText className="w-8 h-8" />, title: 'Register', desc: 'Create your account with Aadhar verification for secure access.' },
+    { icon: <FiSearch className="w-8 h-8" />, title: 'File Complaint', desc: 'Submit your FIR digitally with victim, accused, and incident details.' },
+    { icon: <FiCheckCircle className="w-8 h-8" />, title: 'Track Status', desc: 'Monitor your complaint status in real-time from your dashboard.' },
+  ];
+
+  const features = [
+    { icon: <FiShield className="w-7 h-7" />, title: 'End-to-End Encrypted', desc: 'All personal data is AES-encrypted before transmission. Your privacy is non-negotiable.' },
+    { icon: <FiZap className="w-7 h-7" />, title: 'Instant Processing', desc: 'Complaints are immediately dispatched to the concerned police station for faster resolution.' },
+    { icon: <FiLock className="w-7 h-7" />, title: 'Tamper-Proof Records', desc: 'Every complaint is securely stored with an immutable audit trail for legal integrity.' },
+  ];
+
   return (
-      <div className="min-h-[calc(100vh-5rem)] bg-gray-50 overflow-x-hidden">
-        <Navigation />
-        {/* Hero Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className={`text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl transition-all duration-1000 transform ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>
-            <span className={`block transition-all duration-1000 delay-200 transform ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>Welcome to</span>
-              <span className={`block text-purple-600 transition-all duration-1000 delay-400 transform ${
-                  isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}>e-FIR Complaint System</span>
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+      <Navigation />
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-navy-700 via-navy-800 to-navy-900 overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 right-20 w-72 h-72 bg-saffron-400 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 left-10 w-56 h-56 bg-navy-400 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className={`transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-navy-600/50 border border-navy-500/30 text-saffron-400 text-sm font-medium">
+                <FiShield className="w-4 h-4" />
+                Government of India Initiative
+              </div>
+            </div>
+
+            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight transition-all duration-1000 delay-200 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+              Digital FIR.{' '}
+              <span className="text-saffron-400">Transparent Justice.</span>
             </h1>
-            <p className={`mt-4 text-lg text-gray-600 transition-all duration-1000 delay-600 transform ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>
-              Welcome to Efir - Your trusted platform for raising and managing complaints effectively.
-              We ensure your concerns are heard and addressed with transparency and efficiency.
+
+            <p className={`mt-6 text-lg text-navy-200 max-w-2xl mx-auto transition-all duration-1000 delay-400 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+              File and track First Information Reports digitally. A secure, efficient, and transparent
+              complaint management system for citizens and law enforcement.
             </p>
-            <div className={`mt-12 flex justify-center space-x-4 transition-all duration-1000 delay-800 transform ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>
-              <Link
-                  to="/register"
-                  className="bg-purple-600 text-white active:bg-purple-700 font-bold uppercase text-base px-8 py-3 rounded-full shadow-lg hover:shadow-xl hover:bg-purple-700 hover:scale-105 hover:-translate-y-1 transition-all duration-300 ease-in-out transform"
-              >
-                Get Started
+
+            <div className={`mt-10 flex flex-col sm:flex-row justify-center gap-4 transition-all duration-1000 delay-600 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+              <Link to="/login" className="btn-saffron text-base px-8 py-3.5 text-center">
+                Citizen Login
               </Link>
-              <Link
-                  to="/about"
-                  className="bg-transparent border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-bold uppercase text-base px-8 py-3 rounded-full hover:scale-105 hover:-translate-y-1 transition-all duration-300 ease-in-out transform"
-              >
-                Learn More
+              <Link to="/police-login" className="btn-outline text-base px-8 py-3.5 text-center">
+                Police Login
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Features Section */}
-        <section id="features-section" className="relative py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-wrap justify-center">
-              <div className={`lg:pt-12 pt-6 w-full md:w-4/12 px-4 text-center transition-all duration-800 transform ${
-                  featuresVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-              }`} style={{ transitionDelay: '0ms' }}>
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out group">
-                  <div className="px-4 py-5 flex-auto">
-                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-purple-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                      <svg className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    </div>
-                    <h6 className="text-xl font-semibold group-hover:text-purple-600 transition-colors duration-300">Easy Complaint Filing</h6>
-                    <p className="mt-2 mb-4 text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
-                      File your complaints with our user-friendly interface. Track status in real-time.
-                    </p>
-                  </div>
-                </div>
-              </div>
+        {/* Bottom wave */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full">
+            <path d="M0 40L48 36C96 32 192 24 288 28C384 32 480 48 576 52C672 56 768 48 864 40C960 32 1056 24 1152 28C1248 32 1344 48 1392 56L1440 64V80H0V40Z" fill="#F9FAFB"/>
+          </svg>
+        </div>
+      </section>
 
-              <div className={`w-full md:w-4/12 px-4 text-center transition-all duration-800 transform ${
-                  featuresVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-              }`} style={{ transitionDelay: '200ms' }}>
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out group">
-                  <div className="px-4 py-5 flex-auto">
-                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-purple-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                      <svg className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                    </div>
-                    <h6 className="text-xl font-semibold group-hover:text-purple-600 transition-colors duration-300">Secure & Private</h6>
-                    <p className="mt-2 mb-4 text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
-                      Your data is protected with enterprise-grade security. Your privacy is our priority.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className={`pt-6 w-full md:w-4/12 px-4 text-center transition-all duration-800 transform ${
-                  featuresVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-              }`} style={{ transitionDelay: '400ms' }}>
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out group">
-                  <div className="px-4 py-5 flex-auto">
-                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-purple-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                      <svg className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                    <h6 className="text-xl font-semibold group-hover:text-purple-600 transition-colors duration-300">Quick Resolution</h6>
-                    <p className="mt-2 mb-4 text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
-                      Get faster resolution with our streamlined complaint management system.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* How It Works */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-navy-700 mb-3">How It Works</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">Three simple steps to file your complaint digitally</p>
           </div>
-        </section>
-
-        {/* Chat Section */}
-        <section id="chat-section" className="py-20 bg-gray-100 relative overflow-hidden">
-          {/* Animated background elements */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-10 left-10 w-32 h-32 bg-purple-600 rounded-full animate-pulse"></div>
-            <div className="absolute bottom-10 right-10 w-24 h-24 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
-            <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-purple-300 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {steps.map((step, i) => (
+              <div key={i} className="relative text-center group">
+                {i < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-12 left-[60%] w-[80%] border-t-2 border-dashed border-navy-200" />
+                )}
+                <div className="relative z-10 w-24 h-24 mx-auto mb-6 rounded-2xl bg-navy-700 text-white flex items-center justify-center shadow-lg group-hover:bg-saffron-400 group-hover:text-navy-900 transition-all duration-300">
+                  <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-saffron-400 text-navy-900 text-xs font-bold flex items-center justify-center shadow group-hover:bg-navy-700 group-hover:text-white transition-all">{i + 1}</span>
+                  {step.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-navy-700 mb-2">{step.title}</h3>
+                <p className="text-gray-600 text-sm max-w-xs mx-auto">{step.desc}</p>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <div className="container mx-auto px-4 relative z-10 min-h-screen">
-            <div className={`text-center mb-12 transition-all duration-800 transform ${
-                chatVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Need Help?</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Our AI assistant is here to help you with any questions about our complaint system.
-                Get instant answers and guidance 24/7.
-              </p>
-            </div>
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
-              <ChatBox />
-            </div>
+      {/* Features Section */}
+      <section id="features-section" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-navy-700 mb-3">Why Use eFIR?</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">Built with security, speed, and transparency at its core</p>
           </div>
-        </section>
-        <Footer/>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((f, i) => (
+              <div
+                key={i}
+                className={`card p-8 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-500 transform ${featuresVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}
+                style={{ transitionDelay: `${i * 150}ms` }}
+              >
+                <div className="w-16 h-16 mx-auto mb-5 rounded-xl bg-navy-50 text-navy-700 flex items-center justify-center">
+                  {f.icon}
+                </div>
+                <h3 className="text-lg font-semibold text-navy-700 mb-2">{f.title}</h3>
+                <p className="text-gray-600 text-sm">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Chat Section */}
+      <section id="chat-section" className="py-20 bg-gray-50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className={`text-center mb-12 transition-all duration-800 transform ${chatVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+            <h2 className="text-3xl font-bold text-navy-700 mb-3">Need Help?</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">
+              Our AI assistant is here to answer your questions about the complaint process, 24/7.
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <ChatBox />
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
   );
 };
 

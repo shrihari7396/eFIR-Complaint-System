@@ -1,153 +1,131 @@
-import {useNavigate} from "react-router-dom";
-import {useState} from "react";
-import {useAuth} from "../context/AuthContext.jsx";
+// Verification — Card-wrapped OTP page with 6-box input style
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext.jsx";
 import toast from "react-hot-toast";
+import { FiMail, FiCheck } from 'react-icons/fi';
 
 const Verification = () => {
-    const [email, setEmail] = useState('');
-    const [otp, setOtp] = useState('');
-    const [otpSent, setOtpSent] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
-    const {login} = useAuth();
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-    const handleSendOtp = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            const response = await fetch(`http://localhost:8085/user/sendotp?email=${(email)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/sendotp?email=${(email)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (response.ok) {
+        setOtpSent(true);
+        toast.success('OTP has been sent to your email');
+      } else if (response.status === 405) {
+        toast.error('Please register first');
+      } else {
+        toast.error('Failed to send OTP. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Failed to send OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-            console.log('OTP Response:', response);
-
-            if (response.ok) {
-                setOtpSent(true);
-                toast.success('OTP has been sent to your email');
-            } else if (response.status === 405) {
-                toast.error('please register first');
-            } else {
-                toast.error('Failed to send OTP. Please try again.');
-            }
-        } catch (error) {
-            console.error('OTP Error:', error);
-            toast.error('Failed to send OTP. Please try again.');
-        } finally {
-            setIsLoading(false);
+  const handleOtpVerification = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/verifyOtp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (response.ok) {
+        localStorage.clear();
+        const token = await response.text();
+        toast.success('Verification successful!');
+        if (login(token)) {
+          navigate('/dashboard');
         }
-    };
+      } else {
+        toast.error('Invalid OTP. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Failed to verify OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-// Handle OTP verification
+  return (
+    <div className="min-h-screen flex items-center justify-center civic-pattern py-12 px-4">
+      <div className="max-w-md w-full">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-navy-700 flex items-center justify-center">
+            {otpSent ? <FiCheck className="w-8 h-8 text-saffron-400" /> : <FiMail className="w-8 h-8 text-saffron-400" />}
+          </div>
+          <h1 className="text-2xl font-bold text-navy-700">
+            {otpSent ? 'Enter Verification Code' : 'Email Verification'}
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {otpSent ? `We've sent a code to ${email}` : 'Verify your email to activate your account'}
+          </p>
+        </div>
 
-    const handleOtpVerification = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            const response = await fetch(`http://localhost:8085/user/verifyOtp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            console.log('Verify OTP Response:', response);
-
-            if (response.ok) {
-                // Get the token as text since it's a string response
-                localStorage.clear();
-                const token = await response.text();
-                console.log('Verify OTP Token:', token);
-                // Use the global auth context to handle login
-                toast.success('Login successful!');
-                if (login(token)) {
-                    navigate('/dashboard');
-                }
-            } else {
-                const errorData = await response.json();
-                console.error('Verify OTP Error:', errorData);
-                toast.error(errorData.message || 'Invalid OTP');
-            }
-        } catch (error) {
-            console.error('Verify OTP Error:', error);
-            toast.error('Failed to verify OTP. Please try again.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <form className="space-y-6" onSubmit={otpSent ? handleOtpVerification : handleSendOtp}>
+        {/* Form Card */}
+        <div className="card p-8">
+          <form className="space-y-5" onSubmit={otpSent ? handleOtpVerification : handleSendOtp}>
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email address
-                </label>
-                <div className="mt-1">
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={otpSent}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100"
-                    />
-                </div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+              <input
+                id="email" name="email" type="email" required
+                value={email} onChange={(e) => setEmail(e.target.value)}
+                disabled={otpSent}
+                className="input-field disabled:bg-gray-100 disabled:text-gray-500"
+                placeholder="Enter your registered email"
+              />
             </div>
 
             {otpSent && (
-                <div>
-                    <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                        Enter OTP
-                    </label>
-                    <div className="mt-1">
-                        <input
-                            id="otp"
-                            name="otp"
-                            type="text"
-                            required
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                            placeholder="Enter the OTP sent to your email"
-                        />
-                    </div>
-                </div>
+              <div>
+                <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">Verification Code</label>
+                <input
+                  id="otp" name="otp" type="text" required
+                  value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  className="input-field text-center text-2xl tracking-[0.6em] font-mono"
+                  placeholder="• • • • • •"
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                />
+                <p className="text-xs text-gray-400 mt-2 text-center">Enter the 6-digit code sent to your email</p>
+              </div>
             )}
 
-            <div>
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {isLoading
-                        ? otpSent
-                            ? 'Verifying...'
-                            : 'Sending OTP...'
-                        : otpSent
-                            ? 'Verify OTP'
-                            : 'Send OTP'}
-                </button>
-            </div>
+            <button type="submit" disabled={isLoading} className="w-full btn-primary py-3">
+              {isLoading
+                ? (otpSent ? 'Verifying...' : 'Sending OTP...')
+                : (otpSent ? 'Verify & Continue' : 'Send Verification Code')}
+            </button>
 
             {otpSent && (
-                <div className="text-center">
-                    <button
-                        type="button"
-                        onClick={() => setOtpSent(false)}
-                        className="text-sm text-purple-600 hover:text-purple-500"
-                    >
-                        Change email or resend OTP
-                    </button>
-                </div>
+              <button
+                type="button"
+                onClick={() => setOtpSent(false)}
+                className="w-full text-sm text-navy-600 hover:text-navy-800 font-medium"
+              >
+                Change email or resend code
+              </button>
             )}
-        </form>
-    )
-
-}
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Verification;

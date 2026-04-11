@@ -1,3 +1,72 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply font-sans text-gray-800 bg-gray-50;
+  }
+}
+
+@layer components {
+  /* Civic subtle pattern background for auth pages */
+  .civic-pattern {
+    background-color: #f8fafc;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230F2B5B' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Form input consistent styling */
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg
+           focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700
+           placeholder-gray-400 transition-all duration-200;
+  }
+
+  /* Status badges */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide;
+  }
+  .badge-pending {
+    @apply badge bg-yellow-100 text-yellow-800;
+  }
+  .badge-success {
+    @apply badge bg-green-100 text-green-800;
+  }
+  .badge-rejected {
+    @apply badge bg-red-100 text-red-800;
+  }
+  .badge-processing {
+    @apply badge bg-blue-100 text-blue-800;
+  }
+
+  /* Primary navy button */
+  .btn-primary {
+    @apply px-6 py-3 bg-navy-700 text-white font-semibold rounded-lg
+           hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Saffron CTA button */
+  .btn-saffron {
+    @apply px-6 py-3 bg-saffron-400 text-navy-900 font-semibold rounded-lg
+           hover:bg-saffron-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 focus:ring-offset-2
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Outlined button */
+  .btn-outline {
+    @apply px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg
+           hover:bg-white hover:text-navy-700
+           transition-all duration-200;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden;
+  }
+}

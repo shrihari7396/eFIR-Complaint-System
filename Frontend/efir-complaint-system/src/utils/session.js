@@ -1,15 +1,11 @@
-import axios from "axios";
+// Session utils — uses centralized axiosInstance
 import toast from "react-hot-toast";
 import {decryptComplaint} from "../context/DecryptionHelper.js";
+import API from "../api/axiosInstance.js";
 
-export const  fetchActiveComplaints = async () => {
+export const fetchActiveComplaints = async () => {
     try {
-        console.log('Fetching complaints...');
-        const token  = localStorage.getItem("token");
-        const response = await axios.get('http://localhost:8085/complaint/fetch', {headers:{'Authorization':'Bearer '+token }});
-        console.log('Raw API Response:', response);
-        console.log('Fetched Complaints Data:', response.data);
-        // Extract complaints array from the correct property or wrap single object
+        const response = await API.get('/complaint/fetch');
         const data = response.data;
         let complaintsArray = [];
         if (Array.isArray(data)) {
@@ -22,13 +18,13 @@ export const  fetchActiveComplaints = async () => {
         } else {
             complaintsArray = [];
         }
-        toast.success("fetched complains");
+        toast.success("Complaints loaded");
         const decryptedComplaints = complaintsArray.map(decryptComplaint);
         sessionStorage.setItem('complaints', JSON.stringify(decryptedComplaints));
         return true;
     } catch (error) {
         console.error('Error fetching active complaints:', error);
+        toast.error('Failed to load complaints');
         return false;
     }
 };
-
