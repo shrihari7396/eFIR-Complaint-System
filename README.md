@@ -5,11 +5,14 @@
   <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
   <img src="https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+  <a href="https://efir-system.vercel.app/"><img src="https://img.shields.io/badge/🌐_Live_Demo-efir--system.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" /></a>
 </p>
 
 # 🛡️ eFIR — Electronic First Information Report System
 
 > A full-stack civic legal platform enabling citizens to file FIR complaints digitally and police officers to review, accept, or reject them — built with **Spring Boot** and **React**.
+
+### 🌐 [**Live Demo → efir-system.vercel.app**](https://efir-system.vercel.app/)
 
 ---
 
@@ -355,7 +358,7 @@ All endpoints are documented via Swagger at `/swagger-ui.html`. Summary:
 
 ## 📸 Screenshots
 
-> _Launch the app and visit `http://localhost:5173` to explore the full UI._
+> _Visit the **[Live Demo](https://efir-system.vercel.app/)** or run locally at `http://localhost:5173` to explore the full UI._
 
 | Page | Route | Description |
 |------|-------|-------------|
@@ -387,5 +390,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <p align="center">
   <b>Built with ❤️ for WTL Mini Project</b><br>
-  <sub>Spring Boot · React · MySQL · AES-256 · JWT</sub>
+  <sub>Spring Boot · React · MySQL · AES-256 · JWT</sub><br><br>
+  <a href="https://efir-system.vercel.app/">🌐 <b>efir-system.vercel.app</b></a>
 </p>
