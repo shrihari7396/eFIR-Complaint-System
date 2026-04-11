@@ -389,7 +389,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ---
 
 <p align="center">
-  <b>Built with ❤️ for WTL Mini Project</b><br>
+  <b>Built for Web Technology Laboratory Mini Project</b><br>
   <sub>Spring Boot · React · MySQL · AES-256 · JWT</sub><br><br>
-  <a href="https://efir-system.vercel.app/">🌐 <b>efir-system.vercel.app</b></a>
 </p>
