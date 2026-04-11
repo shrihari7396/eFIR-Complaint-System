@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axiosInstance.js';
 import toast from "react-hot-toast";
-import { decryptAES } from "../utils/AESEncryption.js";
 import { decryptComplaint } from "../context/DecryptionHelper.js";
 import ConfirmModal from './ui/ConfirmModal.jsx';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
@@ -48,7 +47,7 @@ const PoliceDashboard = () => {
   };
 
   const display = (complaintid) => {
-    const c = decryptAES(complaints.find(c => c.id === complaintid));
+    const c = complaints.find(c => c.id === complaintid);
     setSelectedComplaint(c);
   };
 

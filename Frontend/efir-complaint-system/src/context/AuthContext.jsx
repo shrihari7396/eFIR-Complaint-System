@@ -65,12 +65,15 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await API.get('/user/get?token=' + token);
 
-            const user = response.data;
-            if (response.status === 400 || !user.verified) return false;
+            const rawUser = response.data;
+            if (response.status === 400 || !rawUser.verified) return false;
 
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-            setUser(user);
+            localStorage.setItem('user', JSON.stringify(rawUser));
+
+            // Decrypt user fields before setting in state
+            const decryptedUser = decryptuser(rawUser);
+            setUser(decryptedUser);
             setIsAuthenticated(true);
 
             return true;

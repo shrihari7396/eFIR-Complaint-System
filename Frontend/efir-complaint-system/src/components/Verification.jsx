@@ -17,7 +17,7 @@ const Verification = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/sendotp?email=${(email)}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/sendotp?email=${encodeURIComponent(email)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -48,7 +48,8 @@ const Verification = () => {
         localStorage.clear();
         const token = await response.text();
         toast.success('Verification successful!');
-        if (login(token)) {
+        const success = await login(token);
+        if (success) {
           navigate('/dashboard');
         }
       } else {
