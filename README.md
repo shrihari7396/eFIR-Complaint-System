@@ -339,9 +339,9 @@ All endpoints are documented via Swagger at `/swagger-ui.html`. Summary:
 
 | Role | Contributor |
 |------|-------------|
-| Backend Development | Vivek Mane |
-| Frontend Development | Shrihari |
-| Architecture & Design | Team TTIAN |
+| Backend Development | Shrihari Kulkarni |
+| Frontend Development | Athrav Katavkar |
+| Architecture & Design | Sanidhya Kulkarni |
 
 ---
 
