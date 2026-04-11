@@ -95,34 +95,68 @@ The **eFIR Complaint System** digitizes the First Information Report process. Ci
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     FRONTEND (React)                    │
-│  Vite · TailwindCSS · AES Encryption · JWT Storage      │
-│                                                         │
-│  Landing → Register → OTP Verify → Login → Dashboard    │
-│                        ↓                                │
-│              Police Login → Police Dashboard             │
-└────────────────────────┬────────────────────────────────┘
-                         │  REST API (JSON + JWT)
-                         ▼
-┌─────────────────────────────────────────────────────────┐
-│                 BACKEND (Spring Boot)                    │
-│                                                         │
-│  ┌──────────┐  ┌───────────┐  ┌──────────────────┐     │
-│  │Controller│→ │  Service   │→ │  Repository (JPA) │     │
-│  │  Layer   │  │  Layer     │  │      Layer        │     │
-│  └──────────┘  └───────────┘  └──────────────────┘     │
-│       ↑                                    ↓            │
-│  JWT Filter                          MySQL Database     │
-│  (Security)                                             │
-│                                                         │
-│  SOLID Principles Enforced:                             │
-│  • Interface Segregation (4 service contracts)          │
-│  • Strategy Pattern (OTP delivery)                      │
-│  • Constructor Injection Only                           │
-│  • Package-private implementations                      │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Frontend["🖥️ Frontend — React 19 + Vite"]
+        direction LR
+        Landing["Landing Page"]
+        Register["Register"]
+        OTP["OTP Verify"]
+        Login["Citizen Login"]
+        PLogin["Police Login"]
+        Dashboard["Citizen Dashboard"]
+        PDashboard["Police Dashboard"]
+        AI["AI Chat Assistant"]
+
+        Landing --> Register --> OTP --> Login --> Dashboard
+        Landing --> PLogin --> PDashboard
+        Dashboard --> AI
+    end
+
+    subgraph Security["🔐 Security Layer"]
+        AES["AES-256-ECB\n(Client Encryption)"]
+        JWT["JWT Authentication\nFilter"]
+        BCrypt["BCrypt\n(Password Hashing)"]
+    end
+
+    subgraph Backend["⚙️ Backend — Spring Boot 3.4"]
+        direction TB
+        Controllers["Controllers\nUser · Complaint · Police · AI"]
+        
+        subgraph Services["Service Layer (SOLID)"]
+            direction LR
+            AuthSvc["Auth\nService"]
+            RegSvc["Registration\nService"]
+            OTPSvc["OTP\nService"]
+            ProfileSvc["Profile\nService"]
+            ComplaintSvc["Complaint\nService"]
+            PoliceSvc["Police\nService"]
+            AISvc["AI Chat\nService"]
+        end
+        
+        subgraph Infra["Infrastructure"]
+            direction LR
+            Repos["JPA\nRepositories"]
+            Mappers["MapStruct\nMappers"]
+            Strategy["OTP Delivery\nStrategy Pattern"]
+        end
+    end
+
+    subgraph Data["🗄️ Data Layer"]
+        MySQL[("MySQL 8\nefir_db")]
+        Groq["Groq API\n(LLaMA 3)"]
+        Mail["SMTP\n(Gmail)"]
+    end
+
+    Frontend -- "REST API\n(JSON + JWT)" --> JWT
+    JWT --> Controllers
+    AES -.-> Frontend
+    BCrypt -.-> Backend
+    Controllers --> Services
+    Services --> Infra
+    Repos --> MySQL
+    AISvc --> Groq
+    Strategy --> Mail
 ```
 
 ---
