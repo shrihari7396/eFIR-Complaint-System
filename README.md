@@ -167,7 +167,7 @@ flowchart TB
 ## 📁 Project Structure
 
 ```
-WTL_Mini_Project/
+eFIR-Complaint-System/
 │
 ├── Backend/eFIR/
 │   ├── Dockerfile            # [NEW] Multi-stage backend build
