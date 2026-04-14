@@ -31,6 +31,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
                     "/user/register",
                     "/user/login",
                     "/user/login/police",
@@ -38,6 +39,7 @@ public class SecurityConfig {
                     "/user/sendotp",
                     "/user/verifyOtp",
                     "/ai/api/groq",
+                    "/h2-console/**",
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
@@ -46,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/user/get").authenticated()
                 .anyRequest().authenticated()
             )
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
