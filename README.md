@@ -419,3 +419,10 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
   <b>Built for Web Technology Laboratory Mini Project</b><br>
   <sub>Spring Boot · React · MySQL · AES-256 · JWT</sub><br><br>
 </p>
+
+
+ citizen_user
+ Citizen@123
+
+  admin_police
+  Police@123

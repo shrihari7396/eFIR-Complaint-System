@@ -31,6 +31,23 @@ public class EfirApplication {
             org.springframework.core.env.Environment env) {
 
         return args -> {
+            // --- Citizen Seed Account (Pre-verified for Testing) ---
+            String citizenUser = "citizen_user";
+            if (!userRepository.existsByUsername(citizenUser)) {
+                User citizen = User.builder()
+                        .username(citizenUser)
+                        .email("citizen@efir.gov.in")
+                        .password(passwordEncoder.encode("Citizen@123"))
+                        .firstName("Testing")
+                        .lastName("Citizen")
+                        .role(User.Role.USER)
+                        .verified(true)
+                        .build();
+                userRepository.save(citizen);
+                log.info("Citizen seed account created: {} (citizen@efir.gov.in)", citizenUser);
+            }
+
+            // --- Police Seed Account ---
             String username = env.getProperty("efir.police.seed.username", "admin_police");
             String email = env.getProperty("efir.police.seed.email", "police@efir.gov.in");
 
