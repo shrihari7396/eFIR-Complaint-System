@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import API from '../api/axiosInstance.js';
 import { FiShield } from 'react-icons/fi';
+import { injectPoliceDummyData } from '../utils/mockDataInjector.js';
 
 const PoliceLogin = () => {
   const { login } = useAuth();
@@ -84,8 +85,20 @@ const PoliceLogin = () => {
           </form>
         </div>
 
-        <div className="text-center mt-6">
-          <Link to="/login" className="text-sm text-navy-400 hover:text-saffron-400 font-medium transition-colors">
+        <div className="text-center mt-6 space-y-4">
+          {import.meta.env.DEV && (
+            <button
+              onClick={() => {
+                injectPoliceDummyData();
+                toast.success('Test mode active! Using dummy data.');
+                window.location.href = '/police-dashboard';
+              }}
+              className="w-full text-sm py-2 bg-navy-800 hover:bg-navy-700 text-saffron-400 border border-saffron-400/30 rounded-lg transition-colors font-medium cursor-pointer"
+            >
+              🚀 Bypass Login (Test Mode)
+            </button>
+          )}
+          <Link to="/login" className="block text-sm text-navy-400 hover:text-saffron-400 font-medium transition-colors">
             ← Back to Citizen Login
           </Link>
         </div>

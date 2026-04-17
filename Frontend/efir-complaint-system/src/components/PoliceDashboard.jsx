@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import API from '../api/axiosInstance.js';
 import toast from "react-hot-toast";
 import { decryptComplaint } from "../context/DecryptionHelper.js";
+import { getMockComplaints } from '../utils/mockDataInjector.js';
 import ConfirmModal from './ui/ConfirmModal.jsx';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import Footer from './Footer.jsx';
@@ -33,6 +34,16 @@ const PoliceDashboard = () => {
     try {
       setIsLoading(true);
       if (!isAuthenticated) { navigate('/login'); return; }
+      
+      if (localStorage.getItem("TEST_MODE") === "true") {
+        const dummy = getMockComplaints().map(decryptComplaint);
+        setComplaints(dummy);
+        setTotalPages(1);
+        setError(null);
+        setIsLoading(false);
+        return;
+      }
+
       const response = await API.get(`/api/police/complaints?pageNumber=${currentPage}&size=${pageSize}`);
       if (response) {
         const decryptedComplaints = response.data.complaints.map(decryptComplaint);
@@ -58,6 +69,16 @@ const PoliceDashboard = () => {
 
   const handleStatusUpdate = async () => {
     setModalOpen(false);
+    
+    if (localStorage.getItem("TEST_MODE") === "true") {
+        toast.success("Complaint updated successfully. (TEST MODE)");
+        setComplaints(prev => prev.map(c => c.id === modalAction.id ? { ...c, status: modalAction.status } : c));
+        if (selectedComplaint && selectedComplaint.id === modalAction.id) {
+          setSelectedComplaint(prev => ({ ...prev, status: modalAction.status }));
+        }
+        return;
+    }
+
     try {
       const response = await API.post(`/api/police/update?verdict=${modalAction.status}&id=${modalAction.id}`, {});
       if (response.status === 200) {

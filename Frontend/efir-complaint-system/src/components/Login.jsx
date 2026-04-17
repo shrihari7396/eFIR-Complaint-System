@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axiosInstance.js';
 import { FiUser, FiMail } from 'react-icons/fi';
+import { injectCitizenDummyData } from '../utils/mockDataInjector.js';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,14 +22,15 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: credentials.username, password: credentials.password, verified: credentials.verified, role: "USER" }),
+      const response = await API.post('/user/login', { 
+        username: credentials.username, 
+        password: credentials.password, 
+        verified: credentials.verified, 
+        role: "USER" 
       });
 
-      if (response.ok) {
-        const token = await response.text();
+      if (response.status === 200) {
+        const token = response.data;
         const success = await login(token);
         if (success) {
           toast.success('Login successful!');
@@ -37,11 +39,13 @@ const Login = () => {
           toast.error("Email verification needed");
           navigate('/verification');
         }
-      } else {
-        toast.error('Invalid username or password');
       }
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      if (error.response?.status === 401) {
+        toast.error('Invalid username or password');
+      } else {
+        toast.error('Login failed. Please check your credentials.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -51,20 +55,17 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/sendOtp?email=${encodeURIComponent(email)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.ok) {
+      const response = await API.post(`/user/sendOtp?email=${encodeURIComponent(email)}`);
+      if (response.status === 200) {
         setOtpSent(true);
         toast.success('OTP has been sent to your email');
-      } else if (response.status === 405) {
+      }
+    } catch (error) {
+      if (error.response?.status === 405) {
         toast.error('Please register first');
       } else {
         toast.error('Failed to send OTP. Please try again.');
       }
-    } catch (error) {
-      toast.error('Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -74,20 +75,19 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/verifyOtp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.ok) {
-        const token = await response.text();
+      const response = await API.post(`/user/verifyOtp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
+      if (response.status === 200) {
+        const token = response.data;
         toast.success('Login successful!');
         const success = await login(token);
         if (success) navigate('/dashboard');
-      } else {
-        toast.error('Invalid OTP. Please try again.');
       }
     } catch (error) {
-      toast.error('Failed to verify OTP. Please try again.');
+      if (error.response?.status === 401) {
+        toast.error('Invalid OTP. Please try again.');
+      } else {
+        toast.error('Failed to verify OTP. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -175,6 +175,18 @@ const Login = () => {
 
         {/* Footer links */}
         <div className="text-center mt-6 space-y-2">
+          {import.meta.env.DEV && (
+            <button
+              onClick={() => {
+                injectCitizenDummyData();
+                toast.success('Test mode active! Using dummy data.');
+                window.location.href = '/dashboard';
+              }}
+              className="w-full btn-secondary text-sm py-2 mb-4 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors font-medium"
+            >
+              🚀 Bypass Login (Test Mode)
+            </button>
+          )}
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
             <Link to="/register" className="font-semibold text-navy-700 hover:text-saffron-500">Register here</Link>

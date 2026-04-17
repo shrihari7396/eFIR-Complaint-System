@@ -13,6 +13,26 @@ const STEPS = [
   { key: 'review', label: 'Evidence & Review', icon: <FiCheck className="w-4 h-4" /> },
 ];
 
+const ComplaintInputField = ({ label, ...props }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+    <input {...props} className="input-field" />
+  </div>
+);
+
+const AddressFields = ({ data, onChange, prefix = 'address' }) => (
+  <div className="space-y-3 mt-3">
+    <label className="block text-xs font-semibold text-navy-600 uppercase tracking-wide">Address</label>
+    <input name={`${prefix}.street`} value={data.street} onChange={onChange} placeholder="Street address" className="input-field" />
+    <div className="grid grid-cols-2 gap-3">
+      <input name={`${prefix}.city`} value={data.city} onChange={onChange} placeholder="City" className="input-field" />
+      <input name={`${prefix}.state`} value={data.state} onChange={onChange} placeholder="State" className="input-field" />
+      <input name={`${prefix}.zip`} value={data.zip} onChange={onChange} placeholder="ZIP code" className="input-field" />
+      <input name={`${prefix}.country`} value={data.country} onChange={onChange} placeholder="Country" className="input-field" />
+    </div>
+  </div>
+);
+
 const ComplaintSubmission = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [evidenceLink, setEvidenceLink] = useState('');
@@ -65,26 +85,6 @@ const ComplaintSubmission = () => {
     }
   };
 
-  const InputField = ({ label, ...props }) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <input {...props} className="input-field" />
-    </div>
-  );
-
-  const AddressFields = ({ data, onChange, prefix = 'address' }) => (
-    <div className="space-y-3 mt-3">
-      <label className="block text-xs font-semibold text-navy-600 uppercase tracking-wide">Address</label>
-      <input name={`${prefix}.street`} value={data.street} onChange={onChange} placeholder="Street address" className="input-field" />
-      <div className="grid grid-cols-2 gap-3">
-        <input name={`${prefix}.city`} value={data.city} onChange={onChange} placeholder="City" className="input-field" />
-        <input name={`${prefix}.state`} value={data.state} onChange={onChange} placeholder="State" className="input-field" />
-        <input name={`${prefix}.zip`} value={data.zip} onChange={onChange} placeholder="ZIP code" className="input-field" />
-        <input name={`${prefix}.country`} value={data.country} onChange={onChange} placeholder="Country" className="input-field" />
-      </div>
-    </div>
-  );
-
   const renderAddress = (addr) => addr ? [addr.street, addr.city, addr.state, addr.zip, addr.country].filter(Boolean).join(', ') : 'N/A';
 
   return (
@@ -119,10 +119,10 @@ const ComplaintSubmission = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-navy-700 flex items-center gap-2"><FiUser /> Victim Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField label="First Name" name="firstName" value={victim.firstName} onChange={handleNestedChange(setVictim)} placeholder="First name" type="text" />
-                <InputField label="Last Name" name="lastName" value={victim.lastName} onChange={handleNestedChange(setVictim)} placeholder="Last name" type="text" />
+                <ComplaintInputField label="First Name" name="firstName" value={victim.firstName} onChange={handleNestedChange(setVictim)} placeholder="First name" type="text" />
+                <ComplaintInputField label="Last Name" name="lastName" value={victim.lastName} onChange={handleNestedChange(setVictim)} placeholder="Last name" type="text" />
               </div>
-              <InputField label="Phone Number" name="phone" value={victim.phone} onChange={handleNestedChange(setVictim)} placeholder="Phone number" type="tel" />
+              <ComplaintInputField label="Phone Number" name="phone" value={victim.phone} onChange={handleNestedChange(setVictim)} placeholder="Phone number" type="tel" />
               <AddressFields data={victim.address} onChange={handleNestedChange(setVictim)} />
             </div>
           )}
@@ -132,10 +132,10 @@ const ComplaintSubmission = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-navy-700 flex items-center gap-2"><FiAlertTriangle /> Accused Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField label="First Name" name="firstName" value={accused.firstName} onChange={handleNestedChange(setAccused)} placeholder="First name" type="text" />
-                <InputField label="Last Name" name="lastName" value={accused.lastName} onChange={handleNestedChange(setAccused)} placeholder="Last name" type="text" />
+                <ComplaintInputField label="First Name" name="firstName" value={accused.firstName} onChange={handleNestedChange(setAccused)} placeholder="First name" type="text" />
+                <ComplaintInputField label="Last Name" name="lastName" value={accused.lastName} onChange={handleNestedChange(setAccused)} placeholder="Last name" type="text" />
               </div>
-              <InputField label="Phone Number" name="phone" value={accused.phone} onChange={handleNestedChange(setAccused)} placeholder="Phone number" type="tel" />
+              <ComplaintInputField label="Phone Number" name="phone" value={accused.phone} onChange={handleNestedChange(setAccused)} placeholder="Phone number" type="tel" />
               <AddressFields data={accused.address} onChange={handleNestedChange(setAccused)} />
             </div>
           )}
@@ -145,8 +145,8 @@ const ComplaintSubmission = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-navy-700 flex items-center gap-2"><FiMapPin /> Incident Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField label="Date of Incident" name="date" value={incidence.date} onChange={handleNestedChange(setIncidentDetails)} type="date" />
-                <InputField label="Time of Incident" name="time" value={incidence.time} onChange={handleNestedChange(setIncidentDetails)} type="time" />
+                <ComplaintInputField label="Date of Incident" name="date" value={incidence.date} onChange={handleNestedChange(setIncidentDetails)} type="date" />
+                <ComplaintInputField label="Time of Incident" name="time" value={incidence.time} onChange={handleNestedChange(setIncidentDetails)} type="time" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>

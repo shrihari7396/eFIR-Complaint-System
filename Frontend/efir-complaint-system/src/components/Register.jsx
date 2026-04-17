@@ -7,6 +7,13 @@ import toast from "react-hot-toast";
 import { encryptAES } from "../utils/AESEncryption.js";
 import { FiUserPlus } from 'react-icons/fi';
 
+const RegisterInputField = ({ label, id, ...props }) => (
+  <div>
+    <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+    <input id={id} {...props} className="input-field" />
+  </div>
+);
+
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -84,13 +91,6 @@ const Register = () => {
     }
   };
 
-  const InputField = ({ label, id, ...props }) => (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <input id={id} {...props} className="input-field" />
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex items-center justify-center civic-pattern py-8 px-4">
       <div className="w-full max-w-5xl flex flex-col lg:flex-row rounded-2xl shadow-2xl overflow-hidden">
@@ -115,24 +115,24 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InputField label="First Name" id="firstName" name="firstName" type="text" required placeholder="Enter first name" value={formData.firstName} onChange={handleChange} />
-              <InputField label="Last Name" id="lastName" name="lastName" type="text" required placeholder="Enter last name" value={formData.lastName} onChange={handleChange} />
-              <InputField label="Email" id="email" name="email" type="email" required placeholder="Enter email" value={formData.email} onChange={handleChange} />
-              <InputField label="Username" id="username" name="username" type="text" required placeholder="Choose username" value={formData.username} onChange={handleChange} />
-              <InputField label="Password" id="password" name="password" type="password" required placeholder="Create password" value={formData.password} onChange={handleChange} />
-              <InputField label="Aadhar Number" id="aadharNumber" name="aadharNumber" type="text" required pattern="[0-9]{12}" maxLength="12" placeholder="12-digit Aadhar" value={formData.aadharNumber} onChange={handleChange} />
+              <RegisterInputField label="First Name" id="firstName" name="firstName" type="text" required placeholder="Enter first name" value={formData.firstName} onChange={handleChange} />
+              <RegisterInputField label="Last Name" id="lastName" name="lastName" type="text" required placeholder="Enter last name" value={formData.lastName} onChange={handleChange} />
+              <RegisterInputField label="Email" id="email" name="email" type="email" required placeholder="Enter email" value={formData.email} onChange={handleChange} />
+              <RegisterInputField label="Username" id="username" name="username" type="text" required placeholder="Choose username" value={formData.username} onChange={handleChange} />
+              <RegisterInputField label="Password" id="password" name="password" type="password" required placeholder="Create password" value={formData.password} onChange={handleChange} />
+              <RegisterInputField label="Aadhar Number" id="aadharNumber" name="aadharNumber" type="text" required pattern="[0-9]{12}" maxLength="12" placeholder="12-digit Aadhar" value={formData.aadharNumber} onChange={handleChange} />
             </div>
 
             <div>
               <h3 className="text-sm font-semibold text-navy-700 mb-3 mt-2">Address</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <InputField label="Street" id="address.street" name="address.street" type="text" required placeholder="Street address" value={formData.address.street} onChange={handleChange} />
+                  <RegisterInputField label="Street" id="address.street" name="address.street" type="text" required placeholder="Street address" value={formData.address.street} onChange={handleChange} />
                 </div>
-                <InputField label="City" id="address.city" name="address.city" type="text" required placeholder="City" value={formData.address.city} onChange={handleChange} />
-                <InputField label="State" id="address.state" name="address.state" type="text" required placeholder="State" value={formData.address.state} onChange={handleChange} />
-                <InputField label="ZIP Code" id="address.zip" name="address.zip" type="text" required pattern="[0-9]{6}" maxLength="6" placeholder="ZIP code" value={formData.address.zip} onChange={handleChange} />
-                <InputField label="Country" id="address.country" name="address.country" type="text" required placeholder="Country" value={formData.address.country} onChange={handleChange} />
+                <RegisterInputField label="City" id="address.city" name="address.city" type="text" required placeholder="City" value={formData.address.city} onChange={handleChange} />
+                <RegisterInputField label="State" id="address.state" name="address.state" type="text" required placeholder="State" value={formData.address.state} onChange={handleChange} />
+                <RegisterInputField label="ZIP Code" id="address.zip" name="address.zip" type="text" required pattern="[0-9]{6}" maxLength="6" placeholder="ZIP code" value={formData.address.zip} onChange={handleChange} />
+                <RegisterInputField label="Country" id="address.country" name="address.country" type="text" required placeholder="Country" value={formData.address.country} onChange={handleChange} />
               </div>
             </div>
 

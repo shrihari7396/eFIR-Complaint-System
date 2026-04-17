@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
+import API from '../api/axiosInstance.js';
 import toast from "react-hot-toast";
 import { FiMail, FiCheck } from 'react-icons/fi';
 
@@ -17,20 +18,17 @@ const Verification = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/sendotp?email=${encodeURIComponent(email)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.ok) {
+      const response = await API.post(`/user/sendotp?email=${encodeURIComponent(email)}`);
+      if (response.status === 200) {
         setOtpSent(true);
         toast.success('OTP has been sent to your email');
-      } else if (response.status === 405) {
+      }
+    } catch (error) {
+      if (error.response?.status === 405) {
         toast.error('Please register first');
       } else {
         toast.error('Failed to send OTP. Please try again.');
       }
-    } catch (error) {
-      toast.error('Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -40,23 +38,22 @@ const Verification = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/verifyOtp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.ok) {
+      const response = await API.post(`/user/verifyOtp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
+      if (response.status === 200) {
         localStorage.clear();
-        const token = await response.text();
+        const token = response.data;
         toast.success('Verification successful!');
         const success = await login(token);
         if (success) {
           navigate('/dashboard');
         }
-      } else {
-        toast.error('Invalid OTP. Please try again.');
       }
     } catch (error) {
-      toast.error('Failed to verify OTP. Please try again.');
+      if (error.response?.status === 401) {
+        toast.error('Invalid OTP. Please try again.');
+      } else {
+        toast.error('Failed to verify OTP. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
